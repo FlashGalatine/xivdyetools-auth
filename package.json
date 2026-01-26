@@ -1,0 +1,71 @@
+{
+  "name": "@xivdyetools/auth",
+  "version": "1.0.0",
+  "description": "Shared authentication utilities for xivdyetools ecosystem",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./jwt": {
+      "types": "./dist/jwt.d.ts",
+      "import": "./dist/jwt.js"
+    },
+    "./hmac": {
+      "types": "./dist/hmac.d.ts",
+      "import": "./dist/hmac.js"
+    },
+    "./timing": {
+      "types": "./dist/timing.d.ts",
+      "import": "./dist/timing.js"
+    },
+    "./discord": {
+      "types": "./dist/discord.d.ts",
+      "import": "./dist/discord.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@xivdyetools/crypto": "^1.0.0",
+    "discord-interactions": "^4.4.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241224.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "peerDependencies": {
+    "@cloudflare/workers-types": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@cloudflare/workers-types": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "xivdyetools",
+    "auth",
+    "jwt",
+    "hmac",
+    "discord",
+    "cloudflare-workers"
+  ],
+  "author": "XIVDyeTools",
+  "license": "MIT"
+}
