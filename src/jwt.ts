@@ -13,7 +13,6 @@
  */
 
 import {
-  base64UrlEncodeBytes,
   base64UrlDecode,
   base64UrlDecodeBytes,
 } from '@xivdyetools/crypto';
@@ -119,22 +118,21 @@ export async function verifyJWT(
       return null;
     }
 
-    // Verify signature
+    // SECURITY: Verify signature using crypto.subtle.verify() which is
+    // inherently timing-safe (comparison happens in native crypto, not JS)
     const signatureInput = `${headerB64}.${payloadB64}`;
-    const key = await createHmacKey(secret, 'both');
+    const key = await createHmacKey(secret, 'verify');
     const encoder = new TextEncoder();
+    const signatureBytes = base64UrlDecodeBytes(signatureB64);
 
-    const expectedSignature = await crypto.subtle.sign(
+    const isValid = await crypto.subtle.verify(
       'HMAC',
       key,
+      signatureBytes,
       encoder.encode(signatureInput)
     );
-    const expectedSignatureB64 = base64UrlEncodeBytes(
-      new Uint8Array(expectedSignature)
-    );
 
-    // Compare signatures (using string comparison - both are base64url)
-    if (signatureB64 !== expectedSignatureB64) {
+    if (!isValid) {
       return null;
     }
 
@@ -197,21 +195,21 @@ export async function verifyJWTSignatureOnly(
       return null;
     }
 
-    // Verify signature
+    // SECURITY: Verify signature using crypto.subtle.verify() which is
+    // inherently timing-safe (comparison happens in native crypto, not JS)
     const signatureInput = `${headerB64}.${payloadB64}`;
-    const key = await createHmacKey(secret, 'both');
+    const key = await createHmacKey(secret, 'verify');
     const encoder = new TextEncoder();
+    const signatureBytes = base64UrlDecodeBytes(signatureB64);
 
-    const expectedSignature = await crypto.subtle.sign(
+    const isValid = await crypto.subtle.verify(
       'HMAC',
       key,
+      signatureBytes,
       encoder.encode(signatureInput)
     );
-    const expectedSignatureB64 = base64UrlEncodeBytes(
-      new Uint8Array(expectedSignature)
-    );
 
-    if (signatureB64 !== expectedSignatureB64) {
+    if (!isValid) {
       return null;
     }
 

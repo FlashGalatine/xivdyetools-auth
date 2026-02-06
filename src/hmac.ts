@@ -9,6 +9,7 @@
 
 import {
   base64UrlEncodeBytes,
+  base64UrlDecodeBytes,
   bytesToHex,
   hexToBytes,
 } from '@xivdyetools/crypto';
@@ -109,9 +110,17 @@ export async function hmacVerify(
   secret: string
 ): Promise<boolean> {
   try {
-    const expectedSignature = await hmacSign(data, secret);
-    // Use timing-safe comparison
-    return expectedSignature === signature;
+    const key = await createHmacKey(secret, 'verify');
+    const encoder = new TextEncoder();
+    const signatureBytes = base64UrlDecodeBytes(signature);
+
+    // Use crypto.subtle.verify() which is inherently timing-safe
+    return crypto.subtle.verify(
+      'HMAC',
+      key,
+      signatureBytes,
+      encoder.encode(data)
+    );
   } catch {
     return false;
   }
